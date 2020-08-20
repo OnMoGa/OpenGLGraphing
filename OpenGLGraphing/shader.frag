@@ -1,5 +1,5 @@
-﻿#version 330 core
-out vec4 FragColor;
+﻿#version 300 es
+out mediump vec4 FragColor;
 
 void main()
 {
