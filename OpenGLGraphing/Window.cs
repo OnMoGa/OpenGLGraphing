@@ -21,28 +21,21 @@ namespace OpenGLGraphing {
 			GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 			VertexArrayObject = GL.GenVertexArray();
-
 			VertexBufferObject = GL.GenBuffer();
+
 
 			float[] vertices = {
 				-0.5f, -0.5f, 0.0f, //Bottom-left vertex
 				0.5f, -0.5f, 0.0f,  //Bottom-right vertex
 				0.0f,  0.5f, 0.0f   //Top vertex
 			};
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-			GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-			GL.EnableVertexAttribArray(0);
-
 			shader.Use();
 
-			GL.BindVertexArray(VertexArrayObject);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-			GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+			GL.BindVertexArray(VertexArrayObject);
 
+			GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 			GL.EnableVertexAttribArray(0);
 			
