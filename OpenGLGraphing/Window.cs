@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using OpenGLGraphing.Primitives;
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using Rectangle = OpenGLGraphing.Primitives.Rectangle;
 
@@ -13,7 +13,7 @@ namespace OpenGLGraphing {
 		int VertexArrayObject;
 		int VertexBufferObject;
 		private int ElementBufferObject;
-		Shader shader;
+		public static Shader shader;
 
 
 		public List<IDrawable> drawables = new List<IDrawable>();
@@ -33,10 +33,10 @@ namespace OpenGLGraphing {
 			VertexArrayObject = GL.GenVertexArray();
 			GL.BindVertexArray(VertexArrayObject);
 
-			VertexBufferObject = GL.GenBuffer();
+			int VertexBufferObject = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
 
-			ElementBufferObject = GL.GenBuffer();
+			int ElementBufferObject = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
 
 			base.OnLoad(e);
@@ -46,8 +46,6 @@ namespace OpenGLGraphing {
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 			GL.DeleteBuffer(VertexBufferObject);
-
-			GL.BindVertexArray(VertexArrayObject);
 
 			shader.Dispose();
 			base.OnUnload(e);
@@ -70,6 +68,8 @@ namespace OpenGLGraphing {
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
 			GL.Clear(ClearBufferMask.ColorBufferBit);
+
+			GL.BindVertexArray(VertexArrayObject);
 
 			foreach(IDrawable drawable in drawables) {
 				drawable.draw();

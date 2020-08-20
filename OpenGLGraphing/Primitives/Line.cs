@@ -1,22 +1,39 @@
-﻿using OpenTK;
+﻿using System.Collections.Generic;
+using System.Linq;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
 	class Line : Primitive {
 
 
-		public Vector3 p1 { get; set; }
-		public Vector3 p2 { get; set; }
-
-		public Line(Vector3 p1, Vector3 p2) {
-
-		}
+		public List<Vector3> points { get; set; }
 
 
-		public new void draw() {
+		public override void draw() {
+			preDraw();
 
+			List<float> vertList = new List<float>();
+			points.ForEach(p => vertList.AddRange(
+				new List<float>
+					{p.X, p.Y, p.Z}
+				)
+			);
+			float[] verts = vertList.ToArray();
+			
+			uint[] indices = points.Select((p, i) => (uint)i).ToArray();
+			
+			GL.BufferData(BufferTarget.ArrayBuffer, verts.Length * sizeof(float), verts, BufferUsageHint.StaticDraw);
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+			GL.EnableVertexAttribArray(0);
+			
+			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+
+			GL.DrawElements(PrimitiveType.LineStrip, points.Count, DrawElementsType.UnsignedInt, 0);
 
 			base.draw();
 		}
+
 
 
 	}

@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
 	class Triangle : Primitive {
@@ -17,7 +17,8 @@ namespace OpenGLGraphing.Primitives {
 		}
 
 		public override void draw() {
-			
+			preDraw();
+
 			float[] verts = {
 				p1.X, p1.Y, p1.Z,
 				p2.X, p2.Y, p1.Z,

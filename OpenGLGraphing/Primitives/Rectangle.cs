@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
 	class Rectangle : Primitive {
@@ -14,6 +14,7 @@ namespace OpenGLGraphing.Primitives {
 		}
 
 		public override void draw() {
+			preDraw();
 
 			float left = pos.X - size.X / 2;
 			float right = pos.X + size.X / 2;
@@ -37,7 +38,6 @@ namespace OpenGLGraphing.Primitives {
 			GL.EnableVertexAttribArray(0);
 			
 			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
-
 
 			GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, 0);
 
