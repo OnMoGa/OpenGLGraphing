@@ -7,8 +7,9 @@ using OpenTK.Input;
 namespace OpenGLGraphing {
 	public class Window : GameWindow {
 
-		int VertexBufferObject;
 		int VertexArrayObject;
+		int VertexBufferObject;
+		private int ElementBufferObject;
 		Shader shader;
 
 		public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) {
@@ -17,24 +18,36 @@ namespace OpenGLGraphing {
 
 		protected override void OnLoad(EventArgs e)
 		{
-			shader = new Shader("shader.vert", "shader.frag");
 			GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-
-			VertexArrayObject = GL.GenVertexArray();
-			VertexBufferObject = GL.GenBuffer();
-
-
-			float[] vertices = {
-				-0.5f, -0.5f, 0.0f, //Bottom-left vertex
-				0.5f, -0.5f, 0.0f,  //Bottom-right vertex
-				0.0f,  0.5f, 0.0f   //Top vertex
-			};
+			
+			shader = new Shader("shader.vert", "shader.frag");
 			shader.Use();
-
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
+			
+			VertexArrayObject = GL.GenVertexArray();
 			GL.BindVertexArray(VertexArrayObject);
 
+			VertexBufferObject = GL.GenBuffer();
+			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
+
+			float[] vertices = {
+				0.5f,  0.5f, 0.0f,  // top right
+				0.5f, -0.5f, 0.0f,  // bottom right
+				-0.5f, -0.5f, 0.0f, // bottom left
+				-0.5f,  0.5f, 0.0f  // top left
+			};
+
+			uint[] indices = { // note that we start from 0!
+				0, 1, 3,       // first triangle
+				1, 2, 3        // second triangle
+			};
+
+			
+
+			ElementBufferObject = GL.GenBuffer();
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+
+			
 			GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 			GL.EnableVertexAttribArray(0);
@@ -73,8 +86,8 @@ namespace OpenGLGraphing {
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
 
-			GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
-
+			//GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+			GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, 0);
 			
 			Context.SwapBuffers();
 			base.OnRenderFrame(e);
