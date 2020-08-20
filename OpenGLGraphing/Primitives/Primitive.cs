@@ -21,6 +21,14 @@ namespace OpenGLGraphing.Primitives {
 		}
 
 
+		public void bindVerticies(float[] vertices, uint[] indices) {
+			GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+			GL.EnableVertexAttribArray(0);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+		}
+
+
 
 	}
 }

@@ -23,11 +23,7 @@ namespace OpenGLGraphing.Primitives {
 			
 			uint[] indices = points.Select((p, i) => (uint)i).ToArray();
 			
-			GL.BufferData(BufferTarget.ArrayBuffer, verts.Length * sizeof(float), verts, BufferUsageHint.StaticDraw);
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-			GL.EnableVertexAttribArray(0);
-			
-			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+			bindVerticies(verts, indices);
 
 			GL.DrawElements(PrimitiveType.LineStrip, points.Count, DrawElementsType.UnsignedInt, 0);
 
