@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using OpenGLGraphing.Graphs;
 using OpenGLGraphing.Primitives;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using Rectangle = OpenGLGraphing.Primitives.Rectangle;
 
 namespace OpenGLGraphing {
 	public class Window : GameWindow {
@@ -16,7 +17,7 @@ namespace OpenGLGraphing {
 		public static Shader shader;
 
 
-		public List<IDrawable> drawables = new List<IDrawable>();
+		protected List<IDrawable> drawables = new List<IDrawable>();
 
 
 		public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) {
@@ -41,6 +42,7 @@ namespace OpenGLGraphing {
 
 			base.OnLoad(e);
 		}
+
 
 		protected override void OnUnload(EventArgs e)
 		{
@@ -88,7 +90,48 @@ namespace OpenGLGraphing {
 
 
 
+		public void addDrawable(IDrawable drawable) {
+			drawables.Add(drawable);
+		}
 
-		
+
+		public void removeDrawable(IDrawable drawable) {
+			drawables.Remove(drawable);
+		}
+
+
+
+		public static Window NewAsyncWindow(int width, int height, string title, double? updatesPerSecond = null, double? framesPerSecond = null) {
+			EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+
+			Window window = null;
+			Thread thread = new Thread(() => {
+
+				window = new Window(width, height, title);
+				waitHandle.Set();
+
+
+				if (framesPerSecond != null) {
+					if (updatesPerSecond != null) {
+						window.Run(updatesPerSecond.Value, framesPerSecond.Value);
+					} else {
+						window.Run(framesPerSecond.Value);
+					}
+				} else {
+					window.Run();
+				}
+
+				
+			});
+
+			thread.Start();
+
+			waitHandle.WaitOne();
+			return window;
+		}
+
+
+
+
 	}
 }

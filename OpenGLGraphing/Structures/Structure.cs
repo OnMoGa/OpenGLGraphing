@@ -2,7 +2,7 @@
 using OpenGLGraphing.Primitives;
 
 namespace OpenGLGraphing.Structures {
-	class Structure : IDrawable {
+	public class Structure : IDrawable {
 
 		public IEnumerable<IDrawable> drawables = new List<IDrawable>();
 

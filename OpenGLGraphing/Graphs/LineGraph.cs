@@ -6,13 +6,15 @@ using System.Threading;
 using OpenGLGraphing.Primitives;
 using OpenGLGraphing.Structures;
 using OpenTK;
+using static OpenGLGraphing.Tools;
 
 namespace OpenGLGraphing.Graphs {
-	public class LineGraph : Graph {
+	public class LineGraph : Graph, IDrawable{
 
 		
 		public ObservableCollection<DataPoint> dataPoints = new ObservableCollection<DataPoint>();
-
+		private Line line;
+		private XYAxes axes;
 
 		private Vector3 _size = new Vector3(1.6f, 1.6f, 0);
 		public Vector3 size {
@@ -34,9 +36,13 @@ namespace OpenGLGraphing.Graphs {
 			}
 		}
 
+		public System.Drawing.Color lineColor {
+			get => line.color.SystemColor();
+			set => line.color = value.OpenTKColor();
+		}
 
-		private Line line;
-		private XYAxes axes;
+		
+
 	
 
 		public LineGraph() {
@@ -47,33 +53,26 @@ namespace OpenGLGraphing.Graphs {
 				size = size
 			};
 
+			structure = new Structure() {
+				drawables = new List<IDrawable> {
+					line, axes
+				}
+			};
 		}
 
 
-		public override Thread showInNewWindow(int width, int height, string title) {
-
-
-			Thread thread = new Thread(() => {
-
-				Window window = new Window(width, height, title);
-				
-				line.color = Color.Red;
-
-				window.drawables.Add(line);
-				window.drawables.Add(axes);
-				window.Run();
-
-			});
-
-			thread.Start();
-
-			return thread;
+		public override Window showInNewWindow(int width, int height, string title) {
+			Window window = Window.NewAsyncWindow(width, height, title);
+			window.addDrawable(this);
+			return window;
 		}
 
 
 		private void updateDataPoints(IEnumerable<DataPoint> dataPoints) {
 			if(!dataPoints.Any()) return;
 			
+			
+
 			var points = dataPoints
 						 .normalize(size, new Vector3(
 							 dataPoints.Max(d => d.x),
@@ -87,11 +86,11 @@ namespace OpenGLGraphing.Graphs {
 		}
 
 
-
-
-
-
+		public void draw() {
+			structure.draw();
+		}
 	}
+
 
 	public class DataPoint {
 
@@ -112,8 +111,6 @@ namespace OpenGLGraphing.Graphs {
 		}
 		
 	}
-	
-
 
 
 	public static class DataPointTools {
