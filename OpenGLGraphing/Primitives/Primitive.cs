@@ -3,7 +3,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
-	abstract class Primitive : IDrawable {
+	public abstract class Primitive : IDrawable {
 
 		public List<float> verticies { get; set; } = new List<float>();
 

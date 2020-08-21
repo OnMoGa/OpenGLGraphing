@@ -7,13 +7,10 @@ namespace OpenGLGraphing.Primitives {
 
 		public Vector3 pos { get; set; }
 		public Vector3 size { get; set; }
-
-		public Rectangle(Vector3 pos, Vector3 size) {
-			this.pos=pos;
-			this.size=size;
-		}
-
+		
 		public override void draw() {
+			if(pos == null || size == null) return;
+
 			preDraw();
 
 			float left = pos.X - size.X / 2;

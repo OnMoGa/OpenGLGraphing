@@ -4,10 +4,10 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
-	class Line : Primitive {
+	public class Line : Primitive {
 
 
-		public List<Vector3> points { get; set; }
+		public List<Vector3> points { get; set; } = new List<Vector3>();
 
 
 		public override void draw() {
