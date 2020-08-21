@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -41,7 +42,11 @@ namespace OpenGLGraphing.Graphs {
 			set => line.color = value.OpenTKColor();
 		}
 
-		
+
+
+		public float? frameSize = null;
+		public bool waitForOverflowBeforeScrolling = false;
+
 
 	
 
@@ -70,19 +75,81 @@ namespace OpenGLGraphing.Graphs {
 
 		private void updateDataPoints(IEnumerable<DataPoint> dataPoints) {
 			if(!dataPoints.Any()) return;
-			
-			
 
-			var points = dataPoints
-						 .normalize(size, new Vector3(
-							 dataPoints.Max(d => d.x),
-							 dataPoints.Max(d => d.y),
-							 dataPoints.Max(d => d.z)))
-						 .Select(d => d.ToVector3())
-						 .Select(v => new Vector3(v.X + pos.X - size.X/2, v.Y + pos.Y - size.Y/2, v.Z + pos.Z - size.Z/2))
-						 .OrderBy((v) => v.X)
-						 .ToList();
-			line.points = points;
+			IEnumerable<Vector3> vectors = dataPoints.Select(d => d.ToVector3());
+
+
+			if (frameSize == null) {
+				//List<Vector3> points = dataPoints
+				//			 .normalize(new Vector3(
+				//				 dataPoints.Max(d => d.x),
+				//				 dataPoints.Max(d => d.y),
+				//				 dataPoints.Max(d => d.z)))
+				//			 .Select(d => d.ToVector3())
+				//			 .ScaleToFit(pos, size)
+				//			 .OrderBy((v) => v.X)
+				//			 .ToList();
+				//line.points = points;
+
+
+			} else {
+				float rightMostX = vectors.Max(d => d.X);
+				float minX = rightMostX - frameSize.Value;
+
+				List<Vector3> allPoints = vectors.Reverse().ToList();
+				List<Vector3> relevantPoints = allPoints.TakeWhile(p => p.X > minX).ToList();
+
+
+
+				//add cut off point at y-intercept
+				if(allPoints.Count > relevantPoints.Count) {
+					Vector3 halfPoint = allPoints.Skip(relevantPoints.Count).FirstOrDefault();
+					Vector3 lastFullPoint = relevantPoints.Last();
+
+
+					float gradient = (lastFullPoint.Y - halfPoint.Y) / (lastFullPoint.X - halfPoint.X);
+					float negDistance = minX - halfPoint.X;
+
+					float yCompensation = negDistance * gradient;
+
+					halfPoint.X = minX;
+					halfPoint.Y += yCompensation;
+					relevantPoints.Add(halfPoint);
+				}
+
+
+				var points = relevantPoints
+					.Normalize(
+						new Vector3(
+							 minX,
+							 Math.Min(vectors.Min(d => d.Y), 0),
+							 Math.Min(vectors.Min(d => d.Z), 0)
+						 ),
+						 new Vector3(
+							 frameSize.Value + minX,
+							 vectors.Max(d => d.Y),
+							 vectors.Max(d => d.Z)
+						 )
+					)
+					.Select(d => d.NaNToZero())
+					.ScaleToFit(pos, size)
+					.OrderBy(v => v.X)
+					.ToList();
+
+
+				float distanceFromYAxis = points.First().X - pos.X + size.X/2;
+
+				if (waitForOverflowBeforeScrolling) {
+					points = points.Select(p => new Vector3(p.X-distanceFromYAxis, p.Y, p.Z)).ToList();
+				}
+
+
+
+				line.points = points;
+			}
+
+
+			
 		}
 
 
@@ -115,13 +182,23 @@ namespace OpenGLGraphing.Graphs {
 
 	public static class DataPointTools {
 
-		public static IEnumerable<DataPoint> normalize(this IEnumerable<DataPoint> dataPoints, Vector3 graphSize, Vector3 dataRange) {
-			return dataPoints.Select(p => new DataPoint(
-				(p.x/(dataRange.X == 0 ? 1:dataRange.X)) * graphSize.X,
-				(p.y/(dataRange.Y == 0 ? 1:dataRange.Y)) * graphSize.Y,
-				(p.z/(dataRange.Z == 0 ? 1:dataRange.Z)) * graphSize.Z
-			)).ToList();
+		public static IEnumerable<Vector3> Normalize(this IEnumerable<Vector3> vectors, Vector3 dataMin, Vector3 dataMax) {
+			return vectors.Select(p => new Vector3(
+				(p.X-dataMin.X) / (dataMax.X-dataMin.X),
+				(p.Y-dataMin.Y) / (dataMax.Y-dataMin.Y),
+				(p.Z-dataMin.Z) / (dataMax.Z-dataMin.Z)
+			));
 		}
+
+		public static Vector3 NaNToZero(this Vector3 vector) {
+			return new Vector3(
+				Single.IsNaN(vector.X) ? 0: vector.X,
+				Single.IsNaN(vector.Y) ? 0: vector.Y,
+				Single.IsNaN(vector.Z) ? 0: vector.Z
+			);
+		}
+
+
 
 		public static Vector3 ToVector3(this DataPoint datapoint) => new Vector3(datapoint.x, datapoint.y, datapoint.z);
 
