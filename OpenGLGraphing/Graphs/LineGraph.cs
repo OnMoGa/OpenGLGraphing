@@ -7,7 +7,6 @@ using System.Threading;
 using OpenGLGraphing.Primitives;
 using OpenGLGraphing.Structures;
 using OpenTK;
-using static OpenGLGraphing.Tools;
 
 namespace OpenGLGraphing.Graphs {
 	public class LineGraph : Graph, IDrawable{
@@ -80,16 +79,24 @@ namespace OpenGLGraphing.Graphs {
 
 
 			if (frameSize == null) {
-				//List<Vector3> points = dataPoints
-				//			 .normalize(new Vector3(
-				//				 dataPoints.Max(d => d.x),
-				//				 dataPoints.Max(d => d.y),
-				//				 dataPoints.Max(d => d.z)))
-				//			 .Select(d => d.ToVector3())
-				//			 .ScaleToFit(pos, size)
-				//			 .OrderBy((v) => v.X)
-				//			 .ToList();
-				//line.points = points;
+				List<Vector3> points = vectors
+									   .Normalize(
+										   new Vector3(
+											   Math.Min(vectors.Min(d => d.X), 0),
+											   Math.Min(vectors.Min(d => d.Y), 0),
+											   Math.Min(vectors.Min(d => d.Z), 0)
+										   ),
+										   new Vector3(
+											   vectors.Max(d => d.X),
+											   vectors.Max(d => d.Y),
+											   vectors.Max(d => d.Z)
+										   )
+									   )
+									   .Select(v => v.NaNToZero())
+									   .ScaleToFit(pos, size)
+									   .OrderBy((v) => v.X)
+									   .ToList();
+				line.points = points;
 
 
 			} else {
