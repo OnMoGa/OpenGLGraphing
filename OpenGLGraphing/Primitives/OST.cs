@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Drawing;
-using System.IO;
-using System.Text;
 using BitmapGenerators;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using Image = OpenTK.Image;
 using Bitmap = System.Drawing.Bitmap;
 
 namespace OpenGLGraphing.Primitives {
@@ -69,9 +62,6 @@ namespace OpenGLGraphing.Primitives {
 
 			preDraw();
 
-			GL.Enable(EnableCap.Texture2D);
-			GL.Enable(EnableCap.Blend);
-			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
 			List<byte> pixels = new List<byte>();
 			

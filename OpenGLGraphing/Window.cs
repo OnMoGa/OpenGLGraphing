@@ -11,6 +11,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using Color = OpenTK.Color;
 
 namespace OpenGLGraphing {
 	public class Window : GameWindow {
@@ -23,13 +24,27 @@ namespace OpenGLGraphing {
 		protected List<IDrawable> drawables = new List<IDrawable>();
 
 
-		public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) {
+		public Color _backgroundColor  = Color.LightBlue;
+		public Color backgroundColor {
+			get {
+				return _backgroundColor;
+			}
+			set {
+				_backgroundColor = value;
+				GL.ClearColor(_backgroundColor);
+			}
+		}
 
+		public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) {
+			
 		}
 
 		protected override void OnLoad(EventArgs e)
 		{
-			GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			GL.ClearColor(_backgroundColor);
+			GL.Enable(EnableCap.Texture2D);
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 			
 			shader = new Shader("shader.vert", "shader.frag");
 			shader.Use();
@@ -43,7 +58,6 @@ namespace OpenGLGraphing {
 			int ElementBufferObject = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
 			
-
 			base.OnLoad(e);
 		}
 
