@@ -81,22 +81,22 @@ namespace OpenGLGraphing.Graphs {
 
 			if (frameSize == null) {
 				List<Vector3> points = vectors
-									   .Normalize(
-										   new Vector3(
-											   Math.Min(vectors.Min(d => d.X), 0),
-											   Math.Min(vectors.Min(d => d.Y), 0),
-											   Math.Min(vectors.Min(d => d.Z), 0)
-										   ),
-										   new Vector3(
-											   vectors.Max(d => d.X),
-											   vectors.Max(d => d.Y),
-											   vectors.Max(d => d.Z)
-										   )
-									   )
-									   .Select(v => v.NaNToZero())
-									   .ScaleToFit(pos, size)
-									   .OrderBy((v) => v.X)
-									   .ToList();
+				   .Normalize(
+					   new Vector3(
+						   Math.Min(vectors.Min(d => d.X), 0),
+						   Math.Min(vectors.Min(d => d.Y), 0),
+						   Math.Min(vectors.Min(d => d.Z), 0)
+					   ),
+					   new Vector3(
+						   vectors.Max(d => d.X),
+						   vectors.Max(d => d.Y),
+						   vectors.Max(d => d.Z)
+					   )
+				   )
+				   .Select(v => v.NaNToZero())
+				   .ScaleToFit(pos, size)
+				   .OrderBy((v) => v.X)
+				   .ToList();
 				line.points = points;
 
 
@@ -126,7 +126,7 @@ namespace OpenGLGraphing.Graphs {
 				}
 
 
-				var points = relevantPoints
+				List<Vector3> points = relevantPoints
 					.Normalize(
 						new Vector3(
 							 minX,
@@ -190,6 +190,13 @@ namespace OpenGLGraphing.Graphs {
 
 	public static class DataPointTools {
 
+		/// <summary>
+		/// Looks at a series of points and scales them to all their values to fit between 0 and 1
+		/// </summary>
+		/// <param name="vectors"></param>
+		/// <param name="dataMin"></param>
+		/// <param name="dataMax"></param>
+		/// <returns></returns>
 		public static IEnumerable<Vector3> Normalize(this IEnumerable<Vector3> vectors, Vector3 dataMin, Vector3 dataMax) {
 			return vectors.Select(p => new Vector3(
 				(p.X-dataMin.X) / (dataMax.X-dataMin.X),

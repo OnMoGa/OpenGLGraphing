@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
-	class Rectangle : Primitive {
+	public class Rectangle : Primitive {
 
 
 		public Vector3 pos { get; set; }

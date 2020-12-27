@@ -7,9 +7,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
 	public abstract class Primitive : IDrawable {
-
-		public List<float> verticies { get; set; } = new List<float>();
-
+		
 
 		public virtual Color color { get; set; } = Color.White;
 
