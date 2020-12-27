@@ -7,7 +7,7 @@ namespace OpenGLGraphing.Primitives {
 
 		public Vector3 pos { get; set; }
 		public Vector3 size { get; set; }
-		
+
 		public override void draw() {
 			if(pos == null || size == null) return;
 

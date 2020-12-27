@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -8,7 +11,7 @@ namespace OpenGLGraphing.Primitives {
 		public List<float> verticies { get; set; } = new List<float>();
 
 
-		public Color color { get; set; } = Color.White;
+		public virtual Color color { get; set; } = Color.White;
 
 
 		public void preDraw() {
@@ -27,7 +30,6 @@ namespace OpenGLGraphing.Primitives {
 			GL.EnableVertexAttribArray(0);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 		}
-
 
 
 	}

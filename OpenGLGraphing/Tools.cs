@@ -20,6 +20,10 @@ namespace OpenGLGraphing {
 
 
 
+
+
+		
+
 		public static IEnumerable<Vector3> ScaleToFit(this IEnumerable<Vector3> points, Vector3 pos, Vector3 size) {
 			return points.Select(v => new Vector3(
 				v.X + pos.X - size.X / 2,

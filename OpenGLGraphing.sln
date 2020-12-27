@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenGLGraphing", "OpenGLGra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{90AEF621-AB9F-4376-84F6-3D91C0BB30DF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitmapGenerators", "..\ImageProcessing\BitmapGenerators\BitmapGenerators.csproj", "{34C665A6-CB16-45FD-8251-18582B0F5396}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{90AEF621-AB9F-4376-84F6-3D91C0BB30DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90AEF621-AB9F-4376-84F6-3D91C0BB30DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90AEF621-AB9F-4376-84F6-3D91C0BB30DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34C665A6-CB16-45FD-8251-18582B0F5396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34C665A6-CB16-45FD-8251-18582B0F5396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34C665A6-CB16-45FD-8251-18582B0F5396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34C665A6-CB16-45FD-8251-18582B0F5396}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

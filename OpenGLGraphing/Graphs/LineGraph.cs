@@ -36,6 +36,7 @@ namespace OpenGLGraphing.Graphs {
 			}
 		}
 
+
 		public System.Drawing.Color lineColor {
 			get => line.color.SystemColor();
 			set => line.color = value.OpenTKColor();

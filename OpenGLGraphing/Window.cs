@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using OpenGLGraphing.Graphs;
 using OpenGLGraphing.Primitives;
@@ -13,7 +17,6 @@ namespace OpenGLGraphing {
 
 		int VertexArrayObject;
 		int VertexBufferObject;
-		private int ElementBufferObject;
 		public static Shader shader;
 
 
@@ -39,6 +42,7 @@ namespace OpenGLGraphing {
 
 			int ElementBufferObject = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
+			
 
 			base.OnLoad(e);
 		}
@@ -129,6 +133,7 @@ namespace OpenGLGraphing {
 			waitHandle.WaitOne();
 			return window;
 		}
+
 
 
 
