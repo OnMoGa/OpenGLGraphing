@@ -19,22 +19,29 @@ namespace OpenGLGraphing.Primitives {
 		}
 
 		public override void draw() {
-			if(p1 == null || p2 == null || p3 == null) return;
 			preDraw();
 
-			verticies = new []{
-				p1.X, p1.Y, p1.Z, color.R, color.G, color.B,
-				p2.X, p2.Y, p1.Z, color.R, color.G, color.B,
-				p3.X, p3.Y, p1.Z, color.R, color.G, color.B,
-			};
-			verticies = new List<Vertex> {
-				new Vertex {point = p1, color = color},
-				new Vertex {point = p2, color = color},
-				new Vertex {point = p3, color = color}
-			}.SelectMany(v => v.toFloatArray()).ToArray();
-			
-			indices = new uint[]{
-				0, 1, 2
+			vertexList = new VertexList() {
+				vertices = new List<Vertex>() {
+					new Vertex() {
+						point = p1,
+						color = color,
+						texCoord = new Vector2(0, 0)
+					},
+					new Vertex() {
+						point = p2,
+						color = color,
+						texCoord = new Vector2(0, 0)
+					},
+					new Vertex() {
+						point = p3,
+						color = color,
+						texCoord = new Vector2(0, 0)
+					},
+				},
+				indices = new List<uint> {
+					1, 2, 3
+				}
 			};
 
 			draw(PrimitiveType.Triangles);

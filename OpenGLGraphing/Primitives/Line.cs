@@ -11,10 +11,10 @@ namespace OpenGLGraphing.Primitives {
 
 		public override void draw() {
 			preDraw();
-			verticies = points.Select(p => new Vertex {point = p, color = color})
-				.SelectMany(v => v.toFloatArray())
-				.ToArray();
-			indices = points.Select((p, i) => (uint)i).ToArray();
+			vertexList = new VertexList() {
+				vertices = points.Select(p => new Vertex { point = p, color = color }),
+				indices = points.Select((p, i) => (uint)i)
+			};
 			draw(PrimitiveType.LineStrip);
 		}
 

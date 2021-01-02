@@ -11,8 +11,7 @@ namespace OpenGLGraphing.Primitives {
 		public Vector3 size { get; set; }
 		
 		public override void draw() {
-			if(pos == null || size == null) return;
-
+			
 			preDraw();
 
 			float left = pos.X - size.X / 2;
@@ -20,17 +19,35 @@ namespace OpenGLGraphing.Primitives {
 			float top = pos.Y - size.Y / 2;
 			float bottom = pos.Y + size.Y / 2;
 
-			verticies = new List<Vertex> {
-				new Vertex {point = new Vector3(left, bottom, pos.Z), color = color},
-				new Vertex {point = new Vector3(left, top, pos.Z), color = color},
-				new Vertex {point = new Vector3(right, bottom, pos.Z), color = color},
-				new Vertex {point = new Vector3(right, top, pos.Z), color = color},
-			}.SelectMany(v => v.toFloatArray()).ToArray();
-			
-			indices = new uint[]{
-				0, 1, 2,
-				2, 3, 1
+			vertexList = new VertexList() {
+				vertices = new List<Vertex> {
+					new Vertex {
+						point = new Vector3(left, bottom, pos.Z),
+						color = color,
+						texCoord = new Vector2(0, 0)
+					},
+					new Vertex {
+						point = new Vector3(left, top, pos.Z),
+						color = color,
+						texCoord = new Vector2(0, 1)
+					},
+					new Vertex {
+						point = new Vector3(right, bottom, pos.Z),
+						color = color,
+						texCoord = new Vector2(1, 0)
+					},
+					new Vertex {
+						point = new Vector3(right, top, pos.Z),
+						color = color,
+						texCoord = new Vector2(1, 1)
+					}
+				},
+				indices = new List<uint> {
+					0, 1, 2,
+					2, 3, 1
+				}
 			};
+
 
 			draw(PrimitiveType.Triangles);
 		}

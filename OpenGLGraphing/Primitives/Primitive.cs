@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using Bitmap = System.Drawing.Bitmap;
 
 namespace OpenGLGraphing.Primitives {
 	public abstract class Primitive : IDrawable, IDisposable {
@@ -13,9 +15,13 @@ namespace OpenGLGraphing.Primitives {
 		int elementBufferObject; //stores the order of the vertexes need to draw triangles
 
 		public virtual Color color { get; set; } = Color.White;
+		public Texture texture { get; set; }
 
-		public float[] verticies;
+
+		public float[] vertices;
 		public uint[] indices;
+
+		public VertexList vertexList { get; set; }
 
 		private void init() {
 			vertexArrayObject = GL.GenVertexArray();
@@ -23,10 +29,18 @@ namespace OpenGLGraphing.Primitives {
 			elementBufferObject = GL.GenBuffer();
 
 			bindBuffers();
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 7 * sizeof(float), 0 * sizeof(float));
+
+			int posLength = 3;
+			int colorLength = 4;
+			int texLength = 2;
+			int stride = (posLength + colorLength + texLength) * sizeof(float);
+
+			GL.VertexAttribPointer(0, posLength, VertexAttribPointerType.Float, false, stride, 0 * sizeof(float));
 			GL.EnableVertexAttribArray(0);
-			GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 7 * sizeof(float), 3 * sizeof(float));
+			GL.VertexAttribPointer(1, colorLength, VertexAttribPointerType.Float, false, stride, posLength * sizeof(float));
 			GL.EnableVertexAttribArray(1);
+			GL.VertexAttribPointer(2, texLength, VertexAttribPointerType.Float, false, stride, (posLength + colorLength) * sizeof(float));
+			GL.EnableVertexAttribArray(2);
 		}
 
 
@@ -44,9 +58,16 @@ namespace OpenGLGraphing.Primitives {
 		
 		public abstract void draw();
 		public void draw(PrimitiveType primitiveType) {
-			GL.BufferData(BufferTarget.ArrayBuffer, verticies.Length * sizeof(float), verticies, BufferUsageHint.StaticDraw);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
-			GL.DrawElements(primitiveType, indices.Length, DrawElementsType.UnsignedInt, 0);
+			if (texture == null) {
+				Bitmap bitmap = new Bitmap(1, 1);
+				bitmap.SetPixel(0, 0, System.Drawing.Color.White);
+				texture = new Texture(bitmap);
+			}
+			texture.Use();
+			
+			GL.BufferData(BufferTarget.ArrayBuffer, vertexList.vertexSize, vertexList.getFloats().ToArray(), BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, vertexList.indiciesSize, vertexList.indices.ToArray(), BufferUsageHint.StaticDraw);
+			GL.DrawElements(primitiveType, vertexList.indices.Count(), DrawElementsType.UnsignedInt, 0);
 		}
 		
 
@@ -69,14 +90,45 @@ namespace OpenGLGraphing.Primitives {
 
 	}
 
-	class Vertex {
+	public class Vertex {
 		public Vector3 point { get; set; } = Vector3.Zero;
-		public Color color { get; set; } = Color.White;
+		public Vector2 texCoord { get; set; }
+		public Color color { get; set; }
 
-		public IEnumerable<float> toFloatArray() {
-			return new[] {point.X, point.Y, point.Z, (float)color.R / 255, (float)color.G / 255, (float)color.B / 255, (float)color.A / 255};
+		public int size => 9 * sizeof(float);
+
+		public IEnumerable<float> getFloats() {
+
+			List<float> floats = new List<float>();
+			floats.AddRange(new []{point.X, point.Y, point.Z});
+
+			floats.AddRange(new [] {
+				(float)color.R / 255,
+				(float)color.G / 255,
+				(float)color.B / 255,
+				(float)color.A / 255,
+			});
+
+			floats.AddRange(new [] {
+				texCoord.X,
+				texCoord.Y
+			});
+
+			return floats.ToArray();
 		}
-
 	}
+
+	public class VertexList {
+		public IEnumerable<Vertex> vertices { get; set; } = new List<Vertex>();
+		public IEnumerable<uint> indices { get; set; } = new List<uint>();
+		public int vertexSize => vertices.Sum(v => v.size);
+		public int indiciesSize => indices.Count() * sizeof(uint);
+
+		public IEnumerable<float> getFloats() {
+			return vertices.SelectMany(v => v.getFloats());
+		}
+	}
+
+
 
 }
