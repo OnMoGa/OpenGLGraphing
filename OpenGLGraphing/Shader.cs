@@ -7,62 +7,60 @@ using OpenTK.Graphics.OpenGL;
 namespace OpenGLGraphing {
 	public class Shader
 	{
-		int Handle;
+		public int handle;
 
 		public Shader(string vertexPath, string fragmentPath) {
-			int VertexShader;
-			int FragmentShader;
+			int vertexShader;
+			int fragmentShader;
 
-			string VertexShaderSource;
 			using (StreamReader reader = new StreamReader(vertexPath, Encoding.UTF8))
 			{
-				VertexShaderSource = reader.ReadToEnd();
-				VertexShader = GL.CreateShader(ShaderType.VertexShader);
-				GL.ShaderSource(VertexShader, VertexShaderSource);
+				string vertexShaderSource = reader.ReadToEnd();
+				vertexShader = GL.CreateShader(ShaderType.VertexShader);
+				GL.ShaderSource(vertexShader, vertexShaderSource);
 			}
 
-			string FragmentShaderSource;
 			using (StreamReader reader = new StreamReader(fragmentPath, Encoding.UTF8))
 			{
-				FragmentShaderSource = reader.ReadToEnd();
-				FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-				GL.ShaderSource(FragmentShader, FragmentShaderSource);
+				string fragmentShaderSource = reader.ReadToEnd();
+				fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+				GL.ShaderSource(fragmentShader, fragmentShaderSource);
 			}
 
 
-			GL.CompileShader(VertexShader);
+			GL.CompileShader(vertexShader);
 
-			string infoLogVert = GL.GetShaderInfoLog(VertexShader);
-			if (infoLogVert != System.String.Empty)
+			string infoLogVert = GL.GetShaderInfoLog(vertexShader);
+			if (infoLogVert != String.Empty)
 				Console.WriteLine(infoLogVert);
 
-			GL.CompileShader(FragmentShader);
+			GL.CompileShader(fragmentShader);
 
-			string infoLogFrag = GL.GetShaderInfoLog(FragmentShader);
+			string infoLogFrag = GL.GetShaderInfoLog(fragmentShader);
 
-			if (infoLogFrag != System.String.Empty)
+			if (infoLogFrag != String.Empty)
 				Console.WriteLine(infoLogFrag);
 
 
-			Handle = GL.CreateProgram();
+			handle = GL.CreateProgram();
 
-			GL.AttachShader(Handle, VertexShader);
-			GL.AttachShader(Handle, FragmentShader);
+			GL.AttachShader(handle, vertexShader);
+			GL.AttachShader(handle, fragmentShader);
 
-			GL.LinkProgram(Handle);
+			GL.LinkProgram(handle);
 
 
-			GL.DetachShader(Handle, VertexShader);
-			GL.DetachShader(Handle, FragmentShader);
-			GL.DeleteShader(FragmentShader);
-			GL.DeleteShader(VertexShader);
+			GL.DetachShader(handle, vertexShader);
+			GL.DetachShader(handle, fragmentShader);
+			GL.DeleteShader(fragmentShader);
+			GL.DeleteShader(vertexShader);
 
 		}
 
 
 		public void Use()
 		{
-			GL.UseProgram(Handle);
+			GL.UseProgram(handle);
 		}
 
 
@@ -72,7 +70,7 @@ namespace OpenGLGraphing {
 		{
 			if (!disposedValue)
 			{
-				GL.DeleteProgram(Handle);
+				GL.DeleteProgram(handle);
 
 				disposedValue = true;
 			}
@@ -80,7 +78,7 @@ namespace OpenGLGraphing {
 
 		~Shader()
 		{
-			GL.DeleteProgram(Handle);
+			GL.DeleteProgram(handle);
 		}
 
 

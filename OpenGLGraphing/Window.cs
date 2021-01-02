@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -16,11 +17,9 @@ using Color = OpenTK.Color;
 namespace OpenGLGraphing {
 	public class Window : GameWindow {
 
-		int VertexArrayObject;
-		int VertexBufferObject;
-		public static Shader shader;
-
-
+		
+		public Shader shader;
+		
 		protected List<IDrawable> drawables = new List<IDrawable>();
 
 
@@ -42,21 +41,10 @@ namespace OpenGLGraphing {
 		protected override void OnLoad(EventArgs e)
 		{
 			GL.ClearColor(_backgroundColor);
-			GL.Enable(EnableCap.Texture2D);
+			shader = new Shader("shader.vert", "shader.frag");
+
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-			
-			shader = new Shader("shader.vert", "shader.frag");
-			shader.Use();
-			
-			VertexArrayObject = GL.GenVertexArray();
-			GL.BindVertexArray(VertexArrayObject);
-
-			int VertexBufferObject = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-
-			int ElementBufferObject = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
 			
 			base.OnLoad(e);
 		}
@@ -65,8 +53,11 @@ namespace OpenGLGraphing {
 		protected override void OnUnload(EventArgs e)
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-			GL.DeleteBuffer(VertexBufferObject);
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
+			foreach (IDrawable drawable in drawables) {
+				if(drawable is IDisposable disposable) disposable.Dispose();
+			}
 			shader.Dispose();
 			base.OnUnload(e);
 		}
@@ -88,8 +79,8 @@ namespace OpenGLGraphing {
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
 			GL.Clear(ClearBufferMask.ColorBufferBit);
-
-			GL.BindVertexArray(VertexArrayObject);
+			
+			shader.Use();
 
 			foreach(IDrawable drawable in drawables) {
 				drawable.draw();

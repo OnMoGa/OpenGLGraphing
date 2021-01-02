@@ -1,4 +1,6 @@
-﻿using OpenTK;
+﻿using System.Collections.Generic;
+using System.Linq;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {
@@ -17,23 +19,25 @@ namespace OpenGLGraphing.Primitives {
 		}
 
 		public override void draw() {
+			if(p1 == null || p2 == null || p3 == null) return;
 			preDraw();
 
-			float[] verts = {
-				p1.X, p1.Y, p1.Z,
-				p2.X, p2.Y, p1.Z,
-				p3.X, p3.Y, p1.Z,
+			verticies = new []{
+				p1.X, p1.Y, p1.Z, color.R, color.G, color.B,
+				p2.X, p2.Y, p1.Z, color.R, color.G, color.B,
+				p3.X, p3.Y, p1.Z, color.R, color.G, color.B,
 			};
+			verticies = new List<Vertex> {
+				new Vertex {point = p1, color = color},
+				new Vertex {point = p2, color = color},
+				new Vertex {point = p3, color = color}
+			}.SelectMany(v => v.toFloatArray()).ToArray();
 			
-			uint[] indices = {
+			indices = new uint[]{
 				0, 1, 2
 			};
 
-			bindVerticies(verts, indices);
-
-			GL.DrawElements(PrimitiveType.Triangles, 3, DrawElementsType.UnsignedInt, 0);
-
-			base.draw();
+			draw(PrimitiveType.Triangles);
 		}
 
 

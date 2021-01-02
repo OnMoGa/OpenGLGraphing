@@ -1,10 +1,11 @@
-﻿#version 300 es
-out mediump vec4 FragColor;
+﻿#version 330 core
+out vec4 FragColor;
 
-uniform vec3 objectColor;
-uniform vec3 lightColor;
+
+in vec4 vertexColor; // the input variable from the vertex shader (same name and same type)  
+
 
 void main()
 {
-    FragColor = vec4(lightColor * objectColor, 1.0);
+    FragColor = vertexColor;
 }
