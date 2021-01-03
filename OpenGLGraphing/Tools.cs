@@ -23,7 +23,7 @@ namespace OpenGLGraphing {
 
 
 		/// <summary>
-		/// Takes points between with values between 0-1 and fits them in the size at the position provided
+		/// Takes points with values between 0-1 and fits them in the size at the position provided
 		/// </summary>
 		/// <param name="points"></param>
 		/// <param name="pos"></param>

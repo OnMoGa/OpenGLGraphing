@@ -10,10 +10,13 @@ namespace OpenGLGraphing.Structures {
 	class XYAxes : Structure {
 
 		public Rectangle xAxes = new Rectangle() {
-			color = new Color(255, 255, 255, 50)
+			color = new Color(255, 255, 255, 255)
 		};
 		public Rectangle yAxes = new Rectangle() {
-			color = new Color(255, 255, 255, 50)
+			color = new Color(255, 255, 255, 255)
+		};
+		public Rectangle cornerBlock = new Rectangle() {
+			color = new Color(255, 255, 255, 255)
 		};
 
 
@@ -41,25 +44,25 @@ namespace OpenGLGraphing.Structures {
 		}
 
 
-		private float _maxValue;
-		public float maxValue {
+		private float _maxYValue;
+		public float maxYValue {
 			get {
-				return _maxValue;
+				return _maxYValue;
 			}
 			set {
-				_maxValue = value;
+				_maxYValue = value;
 				update();
 			}
 		}
 
 
-		private float _minValue;
-		public float minValue {
+		private float _minYValue;
+		public float minYValue {
 			get {
-				return _minValue;
+				return _minYValue;
 			}
 			set {
-				_minValue = value;
+				_minYValue = value;
 				update();
 			}
 		}
@@ -69,30 +72,48 @@ namespace OpenGLGraphing.Structures {
 		private void update() {
 			float xAxesHeight = 0.01f * size.Y;
 			float yAxesWidth = 0.01f * size.X;
+			Vector3 tickSize = new Vector3(0.04f, 0.01f, 0);
 
-			xAxes.pos = new Vector3(pos.X - yAxesWidth / 4, pos.Y - size.Y / 2, pos.Z);
-			xAxes.size = new Vector3(size.X + yAxesWidth / 2, xAxesHeight, 0);
+			xAxes.pos = new Vector3(
+				pos.X,
+				pos.Y - size.Y/2 - xAxesHeight/2,
+				pos.Z);
+			xAxes.size = new Vector3(size.X, xAxesHeight, 0);
 			
-			yAxes.pos = new Vector3(pos.X - size.X / 2, pos.Y - xAxesHeight / 4, pos.Z);
-			yAxes.size = new Vector3(yAxesWidth, size.Y + xAxesHeight / 2, 0);
+			yAxes.pos = new Vector3(
+				pos.X - size.X/2 - yAxesWidth/2,
+				pos.Y,
+				pos.Z);
+			yAxes.size = new Vector3(yAxesWidth, size.Y, 0);
+
+			cornerBlock.pos = new Vector3(
+				pos.X - size.X/2 - yAxesWidth/2,
+				pos.Y - size.Y/2 - xAxesHeight/2,
+				pos.Z);
+			cornerBlock.size = new Vector3(yAxesWidth, xAxesHeight, 0);
 
 
 			yAxesTicks = new List<AxesTick>();
 
 			AxesTick maxTick = new AxesTick();
-			maxTick.tick.pos = yAxes.pos + new Vector3(-0.02f, yAxes.size.Y/2, 0);
-			maxTick.label.text = $"{maxValue:F2}";
-			maxTick.label.pos = maxTick.tick.pos + new Vector3(-0.1f, 0, 0);
+			maxTick.tick.pos = yAxes.pos + new Vector3(-yAxesWidth/2, yAxes.size.Y/2, 0) - tickSize/2;
+			maxTick.tick.size = tickSize;
+			maxTick.label.text = $"{maxYValue:F2}";
+			maxTick.label.pos = maxTick.tick.pos + new Vector3(-0.01f, 0, 0);
+			maxTick.label.anchor = OST.Anchor.Right;
 			yAxesTicks.Add(maxTick);
 
 			AxesTick minTick = new AxesTick();
-			minTick.tick.pos = yAxes.pos + new Vector3(-0.02f, -yAxes.size.Y/2, 0);
-			minTick.label.text = $"{minValue:F2}";
+			minTick.tick.pos = yAxes.pos + new Vector3(-yAxesWidth/2, -yAxes.size.Y/2, 0) + new Vector3(-tickSize.X/2, 0, 0);
+			minTick.tick.size = tickSize;
+			minTick.label.text = $"{minYValue:F2}";
+			minTick.label.pos = minTick.tick.pos + new Vector3(-0.01f, 0, 0);
+			minTick.label.anchor = OST.Anchor.Right;
 			yAxesTicks.Add(minTick);
-			
+
 
 			drawables = new List<IDrawable> {
-				xAxes, yAxes
+				xAxes, yAxes, cornerBlock
 			}
 			.Concat(xAxesTicks)
 			.Concat(yAxesTicks);
@@ -103,13 +124,11 @@ namespace OpenGLGraphing.Structures {
 	public class AxesTick : Structure {
 
 		public Rectangle tick = new Rectangle() {
-			size = new Vector3(0.04f, 0.01f, 0)
+			color = new Color(255, 255, 255, 255)
 		};
-
 		public OST label = new OST();
 
 		public AxesTick() {
-
 			drawables = new List<IDrawable>() {
 				tick,
 				label

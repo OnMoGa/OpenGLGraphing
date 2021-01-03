@@ -9,7 +9,7 @@ using OpenGLGraphing.Structures;
 using OpenTK;
 
 namespace OpenGLGraphing.Graphs {
-	public class LineGraph : Graph, IDrawable{
+	public class LineGraph : Graph {
 
 		
 		public ObservableCollection<DataPoint> dataPoints = new ObservableCollection<DataPoint>();
@@ -48,6 +48,8 @@ namespace OpenGLGraphing.Graphs {
 		public bool waitForOverflowBeforeScrolling = false;
 
 
+		public bool showDataLabels { get; set; }
+		private IEnumerable<OST> dataLabels { get; set; } = new List<OST>();
 	
 
 		public LineGraph() {
@@ -61,16 +63,11 @@ namespace OpenGLGraphing.Graphs {
 			structure = new Structure() {
 				drawables = new List<IDrawable> {
 					line, axes
-				}
+				}.Concat(dataLabels)
 			};
 		}
 
 
-		public override Window showInNewWindow(int width, int height, string title) {
-			Window window = Window.NewAsyncWindow(width, height, title);
-			window.addDrawable(this);
-			return window;
-		}
 
 
 		private void updateDataPoints(IEnumerable<DataPoint> dataPoints) {
@@ -126,17 +123,17 @@ namespace OpenGLGraphing.Graphs {
 				}
 
 
-				List<Vector3> points = relevantPoints
+				List<Vector3> pointsScaled = relevantPoints
 					.Normalize(
 						new Vector3(
 							 minX,
-							 Math.Min(vectors.Min(d => d.Y), 0),
-							 Math.Min(vectors.Min(d => d.Z), 0)
+							 Math.Max(relevantPoints.Min(d => d.Y), 0),
+							 Math.Max(relevantPoints.Min(d => d.Z), 0)
 						 ),
 						 new Vector3(
 							 frameSize.Value + minX,
-							 vectors.Max(d => d.Y),
-							 vectors.Max(d => d.Z)
+							 relevantPoints.Max(d => d.Y),
+							 relevantPoints.Max(d => d.Z)
 						 )
 					)
 					.Select(d => d.NaNToZero())
@@ -144,26 +141,34 @@ namespace OpenGLGraphing.Graphs {
 					.OrderBy(v => v.X)
 					.ToList();
 
+				IEnumerable<(Vector3 coordinatePoint, Vector3 dataPoint)> zippedPoints = pointsScaled.Zip(relevantPoints.AsEnumerable().Reverse().ToList(),
+					(coordinatePoint, dataPoint) => (coordinatePoint, dataPoint));
 
-				float distanceFromYAxis = points.First().X - pos.X + size.X/2;
+				float distanceFromYAxis = pointsScaled.First().X - pos.X + size.X/2;
 
 				if (waitForOverflowBeforeScrolling) {
-					points = points.Select(p => new Vector3(p.X-distanceFromYAxis, p.Y, p.Z)).ToList();
+					pointsScaled = pointsScaled.Select(p => new Vector3(p.X-distanceFromYAxis, p.Y, p.Z)).ToList();
 				}
 
+				line.points = pointsScaled;
+				axes.minYValue = relevantPoints.Min(p => p.Y);
+				axes.maxYValue = relevantPoints.Max(p => p.Y);
 
+				dataLabels = zippedPoints.Select(zp => new OST() {
+					text = $"{zp.dataPoint.X:F2}, {zp.dataPoint.Y:F2}",
+					pos = zp.coordinatePoint,
+					height = 0.05f
+				});
 
-				line.points = points;
+				structure.drawables = new List<IDrawable> {
+					line, axes
+				}.Concat(dataLabels);
 			}
 
 
 			
 		}
 
-
-		public void draw() {
-			structure.draw();
-		}
 	}
 
 

@@ -15,8 +15,9 @@ namespace OpenGLGraphing.Primitives {
 		int elementBufferObject; //stores the order of the vertexes need to draw triangles
 
 		public virtual Color color { get; set; } = Color.White;
-		public Texture texture { get; set; }
+		protected Texture texture { get; set; }
 
+		public bool visible { get; set; } = true;
 
 		public float[] vertices;
 		public uint[] indices;
@@ -57,7 +58,10 @@ namespace OpenGLGraphing.Primitives {
 
 		
 		public abstract void draw();
+
 		public void draw(PrimitiveType primitiveType) {
+			if (!visible) return;
+
 			if (texture == null) {
 				Bitmap bitmap = new Bitmap(1, 1);
 				bitmap.SetPixel(0, 0, System.Drawing.Color.White);

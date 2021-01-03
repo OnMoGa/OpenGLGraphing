@@ -5,11 +5,9 @@ using BitmapGenerators;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Bitmap = System.Drawing.Bitmap;
-using Color = OpenTK.Color;
-using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 namespace OpenGLGraphing.Primitives {
-	public class OST : Primitive, IDrawable {
+	public class OST : Primitive {
 
 		private string _text;
 		public string text {
@@ -45,7 +43,15 @@ namespace OpenGLGraphing.Primitives {
 
 
 		public Vector3 pos { get; set; } = new Vector3(0, 0, 0);
-		public Vector3 size { get; set; } = new Vector3(0.1f, 0.1f, 0);
+		public float height { get; set; } = 0.1f;
+
+		public enum Anchor {
+			Left,
+			Right,
+			Center
+		}
+
+		public Anchor anchor { get; set; } = Anchor.Center;
 
 		private Bitmap bitmap;
 
@@ -62,9 +68,23 @@ namespace OpenGLGraphing.Primitives {
 			texture ??= new Texture(bitmap);
 			preDraw();
 
+			float aspectRatio = (float)bitmap.Width / bitmap.Height;
+			Vector2 size = new Vector2(height * aspectRatio, height);
 
-			float left = pos.X - size.X / 2;
-			float right = pos.X + size.X / 2;
+			float left = 0;
+			float right = 0;
+			if (anchor == Anchor.Left) {
+				left = pos.X;
+				right = pos.X + size.X;
+			} else if (anchor == Anchor.Right) {
+				left = pos.X - size.X;
+				right = pos.X;
+			} else if (anchor == Anchor.Center) {
+				left = pos.X - size.X / 2;
+				right = pos.X + size.X / 2;
+			}
+
+
 			float top = pos.Y - size.Y / 2;
 			float bottom = pos.Y + size.Y / 2;
 
