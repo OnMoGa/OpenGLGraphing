@@ -33,7 +33,7 @@ namespace OpenGLGraphing.Structures {
 			}
 			set {
 				_maxYValue = value;
-				update();
+				sizePosUpdated();
 			}
 		}
 
@@ -45,12 +45,12 @@ namespace OpenGLGraphing.Structures {
 			}
 			set {
 				_minYValue = value;
-				update();
+				sizePosUpdated();
 			}
 		}
 
 
-		protected override void update() {
+		protected override void sizePosUpdated() {
 			float xAxesHeight = 0.01f * size.Y;
 			float yAxesWidth = 0.01f * size.X;
 			Vector3 tickSize = new Vector3(0.04f, 0.01f, 0);
@@ -116,7 +116,7 @@ namespace OpenGLGraphing.Structures {
 			};
 		}
 
-		protected override void update() {
+		protected override void sizePosUpdated() {
 			throw new NotImplementedException();
 		}
 	}

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using OpenGLGraphing.Primitives;
 using OpenGLGraphing.Structures;
-using OpenTK;
 using Color = System.Drawing.Color;
 using Vector3 = System.Numerics.Vector3;
 
@@ -14,12 +11,12 @@ namespace OpenGLGraphing.Graphs {
 	public class LineGraph : Graph {
 
 		
-		public ObservableCollection<DataPoint> dataPoints = new ObservableCollection<DataPoint>();
+		public readonly ObservableCollection<DataPoint> dataPoints = new ObservableCollection<DataPoint>();
 		private Line line;
 		private XYAxes axes;
 
 
-		protected override void update() {
+		protected override void sizePosUpdated() {
 			axes.size = size;
 			axes.pos = pos;
 			updateDataPoints(dataPoints);
@@ -153,28 +150,28 @@ namespace OpenGLGraphing.Graphs {
 			
 		}
 
+
+		public class DataPoint {
+			public float x { get; set; }
+			public float y { get; set; }
+			public float z { get; set; }
+
+			public DataPoint(float x, float y, float z) {
+				this.x=x;
+				this.y=y;
+				this.z=z;
+			}
+			public DataPoint(float x, float y) {
+				this.x=x;
+				this.y=y;
+				this.z = 0;
+			}
+		}
+
 	}
 
 
-	public class DataPoint {
-
-		public float x { get; set; }
-		public float y { get; set; }
-		public float z { get; set; }
-
-		public DataPoint(float x, float y, float z) {
-			this.x=x;
-			this.y=y;
-			this.z=z;
-		}
-
-		public DataPoint(float x, float y) {
-			this.x=x;
-			this.y=y;
-			this.z = 0;
-		}
-		
-	}
+	
 
 
 	public static class DataPointTools {
@@ -204,7 +201,7 @@ namespace OpenGLGraphing.Graphs {
 
 
 
-		public static Vector3 ToVector3(this DataPoint datapoint) => new Vector3(datapoint.x, datapoint.y, datapoint.z);
+		public static Vector3 ToVector3(this LineGraph.DataPoint datapoint) => new Vector3(datapoint.x, datapoint.y, datapoint.z);
 
 	}
 

@@ -15,7 +15,7 @@ namespace OpenGLGraphing.Structures {
 			get => _pos;
 			set {
 				_pos = value;
-				update();
+				sizePosUpdated();
 			}
 		}
 
@@ -24,11 +24,11 @@ namespace OpenGLGraphing.Structures {
 			get => _size;
 			set {
 				_size = value;
-				update();
+				sizePosUpdated();
 			}
 		}
 
-		protected abstract void update();
+		protected abstract void sizePosUpdated();
 
 		public void draw() {
 			if(!visible) return;
