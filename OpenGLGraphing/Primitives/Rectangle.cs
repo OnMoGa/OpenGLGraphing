@@ -2,6 +2,7 @@
 using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using Vector3 = System.Numerics.Vector3;
 
 namespace OpenGLGraphing.Primitives {
 	public class Rectangle : Primitive {

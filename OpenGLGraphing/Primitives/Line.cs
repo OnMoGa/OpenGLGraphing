@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OpenTK;
+using System.Numerics;
 using OpenTK.Graphics.OpenGL;
 
 namespace OpenGLGraphing.Primitives {

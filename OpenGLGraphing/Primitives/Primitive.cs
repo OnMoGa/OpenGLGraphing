@@ -6,6 +6,8 @@ using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Bitmap = System.Drawing.Bitmap;
+using Color = System.Drawing.Color;
+using Vector3 = System.Numerics.Vector3;
 
 namespace OpenGLGraphing.Primitives {
 	public abstract class Primitive : IDrawable, IDisposable {

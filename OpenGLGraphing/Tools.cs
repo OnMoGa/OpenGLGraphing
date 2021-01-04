@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using System.Numerics;
 
 namespace OpenGLGraphing {
 	public static class Tools {
 
 
 
-		public static System.Drawing.Color SystemColor(this OpenTK.Color color) {
-			return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+		//public static System.Drawing.Color SystemColor(this OpenTK.Color color) {
+		//	return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+		//}
+		//public static OpenTK.Color OpenTKColor(this System.Drawing.Color color) {
+		//	return OpenTK.Color.FromArgb(color.A, color.R, color.G, color.B);
+		//}
+
+
+		public static System.Numerics.Vector3 SystemVector3(this OpenTK.Vector3 vec3) {
+			return new System.Numerics.Vector3(vec3.X, vec3.Y, vec3.Z);
 		}
-		public static OpenTK.Color OpenTKColor(this System.Drawing.Color color) {
-			return OpenTK.Color.FromArgb(color.A, color.R, color.G, color.B);
+
+		public static OpenTK.Vector3 OpenTKVector3(this System.Numerics.Vector3 vec3) {
+			return new OpenTK.Vector3(vec3.X, vec3.Y, vec3.Z);
 		}
 
 

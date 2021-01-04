@@ -5,6 +5,8 @@ using BitmapGenerators;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Bitmap = System.Drawing.Bitmap;
+using Color = System.Drawing.Color;
+using Vector3 = System.Numerics.Vector3;
 
 namespace OpenGLGraphing.Primitives {
 	public class OST : Primitive {
@@ -31,7 +33,7 @@ namespace OpenGLGraphing.Primitives {
 			}
 		}
 
-		public override OpenTK.Color color {
+		public override Color color {
 			get {
 				return base.color;
 			}
@@ -59,7 +61,7 @@ namespace OpenGLGraphing.Primitives {
 			bitmap = BitmapGenerators.TextToBitmap.GenerateBitmap(text, new TextOptions() {
 				backgroundColor = System.Drawing.Color.FromArgb(0, 0, 0, 0),
 				font = font,
-				textColor = color.SystemColor()
+				textColor = color
 			});
 		}
 

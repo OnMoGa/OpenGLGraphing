@@ -5,44 +5,26 @@ using System.Text;
 using OpenGLGraphing.Primitives;
 using OpenTK;
 using Rectangle = OpenGLGraphing.Primitives.Rectangle;
+using Color = System.Drawing.Color;
+using Vector3 = System.Numerics.Vector3;
 
 namespace OpenGLGraphing.Structures {
 	class XYAxes : Structure {
 
 		public Rectangle xAxes = new Rectangle() {
-			color = new Color(255, 255, 255, 255)
+			color = Color.FromArgb(255, 255, 255, 255)
 		};
 		public Rectangle yAxes = new Rectangle() {
-			color = new Color(255, 255, 255, 255)
+			color = Color.FromArgb(255, 255, 255, 255)
 		};
 		public Rectangle cornerBlock = new Rectangle() {
-			color = new Color(255, 255, 255, 255)
+			color = Color.FromArgb(255, 255, 255, 255)
 		};
 
 
 		public List<AxesTick> yAxesTicks { get; set; } = new List<AxesTick>();
 		public List<AxesTick> xAxesTicks { get; set; } = new List<AxesTick>();
-
-
-		private Vector3 _pos;
-		public Vector3 pos {
-			get => _pos;
-			set {
-				_pos = value;
-				update();
-			}
-		}
-
-
-		private Vector3 _size;
-		public Vector3 size {
-			get => _size;
-			set {
-				_size = value;
-				update();
-			}
-		}
-
+		
 
 		private float _maxYValue;
 		public float maxYValue {
@@ -68,8 +50,7 @@ namespace OpenGLGraphing.Structures {
 		}
 
 
-
-		private void update() {
+		protected override void update() {
 			float xAxesHeight = 0.01f * size.Y;
 			float yAxesWidth = 0.01f * size.X;
 			Vector3 tickSize = new Vector3(0.04f, 0.01f, 0);
@@ -124,7 +105,7 @@ namespace OpenGLGraphing.Structures {
 	public class AxesTick : Structure {
 
 		public Rectangle tick = new Rectangle() {
-			color = new Color(255, 255, 255, 255)
+			color = Color.FromArgb(255, 255, 255, 255)
 		};
 		public OST label = new OST();
 
@@ -133,6 +114,10 @@ namespace OpenGLGraphing.Structures {
 				tick,
 				label
 			};
+		}
+
+		protected override void update() {
+			throw new NotImplementedException();
 		}
 	}
 

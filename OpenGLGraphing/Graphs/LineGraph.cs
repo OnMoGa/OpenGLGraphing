@@ -7,6 +7,8 @@ using System.Threading;
 using OpenGLGraphing.Primitives;
 using OpenGLGraphing.Structures;
 using OpenTK;
+using Color = System.Drawing.Color;
+using Vector3 = System.Numerics.Vector3;
 
 namespace OpenGLGraphing.Graphs {
 	public class LineGraph : Graph {
@@ -16,33 +18,17 @@ namespace OpenGLGraphing.Graphs {
 		private Line line;
 		private XYAxes axes;
 
-		private Vector3 _size = new Vector3(1.6f, 1.6f, 0);
-		public Vector3 size {
-			get => _size;
-			set {
-				_size = value;
-				axes.size = value;
-				updateDataPoints(dataPoints);
-			}
+
+		protected override void update() {
+			axes.size = size;
+			axes.pos = pos;
+			updateDataPoints(dataPoints);
 		}
 
-		private Vector3 _pos = new Vector3(0, 0, 0);
-		public Vector3 pos {
-			get => _pos;
-			set {
-				_pos = value;
-				axes.pos = value;
-				updateDataPoints(dataPoints);
-			}
+		public Color lineColor {
+			get => line.color;
+			set => line.color = value;
 		}
-
-
-		public System.Drawing.Color lineColor {
-			get => line.color.SystemColor();
-			set => line.color = value.OpenTKColor();
-		}
-
-
 
 		public float? frameSize = null;
 		public bool waitForOverflowBeforeScrolling = false;
@@ -57,14 +43,12 @@ namespace OpenGLGraphing.Graphs {
 			line = new Line();
 			axes = new XYAxes() {
 				pos = pos,
-				size = size
+				size = pos
 			};
 
-			structure = new Structure() {
-				drawables = new List<IDrawable> {
-					line, axes
-				}.Concat(dataLabels)
-			};
+			drawables = new List<IDrawable> {
+				line, axes
+			}.Concat(dataLabels);
 		}
 
 
@@ -160,7 +144,7 @@ namespace OpenGLGraphing.Graphs {
 					height = 0.05f
 				});
 
-				structure.drawables = new List<IDrawable> {
+				drawables = new List<IDrawable> {
 					line, axes
 				}.Concat(dataLabels);
 			}
