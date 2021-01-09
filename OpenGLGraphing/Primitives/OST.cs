@@ -105,13 +105,16 @@ namespace OpenGLGraphing.Primitives {
 			transformationMatrix = Matrix4.Identity
 				* Matrix4.CreateScale(size.ToOpenTKVector3());
 
-			if(anchor == Anchor.Left) {
-				transformationMatrix *= Matrix4.CreateTranslation(size.X/2, 0, 0);
-			} else if(anchor == Anchor.Right) {
-				transformationMatrix *= Matrix4.CreateTranslation(-size.X/2, 0, 0);
+			switch (anchor) {
+				case Anchor.Left:
+					transformationMatrix *= Matrix4.CreateTranslation(size.X/2, 0, 0);
+					break;
+				case Anchor.Right:
+					transformationMatrix *= Matrix4.CreateTranslation(-size.X/2, 0, 0);
+					break;
 			}
 
-			transformationMatrix *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(45))
+			transformationMatrix *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotationDegrees))
 				* Matrix4.CreateTranslation(pos.ToOpenTKVector3());
 			
 			draw(PrimitiveType.Triangles);

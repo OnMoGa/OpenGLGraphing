@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
@@ -30,6 +32,26 @@ namespace OpenGLGraphing {
 		}
 
 
+		public static Color mixColors(Color color1, Color color2, double ratio) {
+
+			int aDiff = color2.A - color1.A;
+			double aDelta = aDiff * ratio;
+			int newA = (int)(color1.A + aDelta);
+
+			int rDiff = color2.R - color1.R;
+			double rDelta = rDiff * ratio;
+			int newR = (int)(color1.R + rDelta);
+
+			int gDiff = color2.G - color1.G;
+			double gDelta = gDiff * ratio;
+			int newG = (int)(color1.G + gDelta);
+
+			int bDiff = color2.B - color1.B;
+			double bDelta = bDiff * ratio;
+			int newB = (int)(color1.B + bDelta);
+
+			return Color.FromArgb(newA, newR, newG, newB);
+		}
 		
 	}
 }

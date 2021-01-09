@@ -11,7 +11,7 @@ namespace OpenGLGraphing.Graphs {
 	public class LineGraph : Graph {
 
 		
-		public readonly ObservableCollection<DataPoint> dataPoints = new ObservableCollection<DataPoint>();
+		public readonly SmartCollection<DataPoint> dataPoints = new SmartCollection<DataPoint>();
 		private Line line;
 		private XYAxes axes;
 
