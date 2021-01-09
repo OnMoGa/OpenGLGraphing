@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
+using OpenGLGraphing.Primitives;
 using Rectangle = OpenGLGraphing.Primitives.Rectangle;
 using Vector3 = System.Numerics.Vector3;
 using Color = System.Drawing.Color;
@@ -17,16 +19,36 @@ namespace OpenGLGraphing.Graphs {
 
 		private Division[,] division;
 
+		private List<OST> labels = new List<OST>();
 
-		protected override void sizePosUpdated() {
-			updateSquares(dataItems);
-		}
 
 		public Heatmap() {
 			dataItems.CollectionChanged += (newList, e) => updateSquares((IEnumerable<DataItem>)newList);
-
-
 		}
+
+
+		protected override void sizePosUpdated() {
+			updateSquares(dataItems);
+			updateLabels();
+		}
+
+
+
+		private void updateLabels() {
+			labels = new List<OST>();
+			for (int x = 0; x < xCategories.Count(); x++) {
+				OST ost = new OST() {
+					text = xCategories.Skip(x).First().label,
+					pos = getPosForSquare(x, -1),
+					anchor = OST.Anchor.Right,
+					rotationDegrees = 45f,
+					height = 0.05f
+				};
+				labels.Add(ost);
+			}
+		}
+
+
 
 		private void updateSquares(IEnumerable<DataItem> newList) {
 
@@ -35,18 +57,13 @@ namespace OpenGLGraphing.Graphs {
 
 			division = new Division[yCategoriesCount, xCategoriesCount];
 
-			Vector3 recSize = new Vector3(size.X / xCategoriesCount - 0.005f, size.Y / yCategoriesCount - 0.005f, 0);
+			Vector3 recSize = new Vector3(size.X / xCategoriesCount - 0.002f, size.Y / yCategoriesCount - 0.002f, 0);
 			
 			for (int y = 0; y < yCategoriesCount; y++) {
 				for (int x = 0; x < xCategoriesCount; x++) {
 
-					Vector3 recPos = new Vector3();
-					recPos.X = -size.X/2 + size.X/xCategoriesCount * x + recSize.X/2;
-					recPos.Y = -size.Y/2 + size.Y/yCategoriesCount * y + recSize.Y/2;
-
 					Category xCategory = xCategories.Skip(x).First(); 
 					Category yCategory = yCategories.Skip(y).First();
-
 
 					int valuesInRect = newList.Count(v =>
 						xCategory.categorizer(v.value) && yCategory.categorizer(v.value));
@@ -54,7 +71,7 @@ namespace OpenGLGraphing.Graphs {
 					division[y, x] = new Division {
 						rectangle = new Rectangle() {
 							size = recSize,
-							pos = recPos
+							pos = getPosForSquare(x, y)
 						},
 						intensity = valuesInRect
 					};
@@ -80,14 +97,17 @@ namespace OpenGLGraphing.Graphs {
 				});
 			}
 			
-				
 
-
-
-
-			drawables = divisionList.Select(d => d.rectangle);
+			drawables = divisionList.Select(d => d.rectangle).Concat<IDrawable>(labels);
 
 		}
+
+
+		private Vector3 getPosForSquare(int x, int y) =>
+			new Vector3(
+				size.X / xCategories.Count() * (x + 0.5f),
+				size.Y / yCategories.Count() * (y + 0.5f),
+				0);
 
 
 		class Division {

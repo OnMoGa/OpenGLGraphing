@@ -18,7 +18,7 @@ namespace OpenGLGraphing {
 	public class Window : GameWindow {
 
 		
-		public Shader shader;
+		public static Shader shader;
 		
 		protected List<IDrawable> drawables = new List<IDrawable>();
 

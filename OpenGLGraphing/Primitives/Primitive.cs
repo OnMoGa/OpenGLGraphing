@@ -19,6 +19,9 @@ namespace OpenGLGraphing.Primitives {
 		public virtual Color color { get; set; } = Color.White;
 		protected Texture texture { get; set; }
 
+		public Matrix4 transformationMatrix = Matrix4.Identity;
+		public float rotationDegrees { get; set; }
+
 		public bool visible { get; set; } = true;
 
 		public float[] vertices;
@@ -70,6 +73,9 @@ namespace OpenGLGraphing.Primitives {
 				texture = new Texture(bitmap);
 			}
 			texture.Use();
+			
+			int location = GL.GetUniformLocation(Window.shader.handle, "transform");
+			GL.UniformMatrix4(location, false, ref transformationMatrix);
 			
 			GL.BufferData(BufferTarget.ArrayBuffer, vertexList.vertexSize, vertexList.getFloats().ToArray(), BufferUsageHint.StaticDraw);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, vertexList.indiciesSize, vertexList.indices.ToArray(), BufferUsageHint.StaticDraw);

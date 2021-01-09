@@ -7,7 +7,6 @@ using Vector3 = System.Numerics.Vector3;
 namespace OpenGLGraphing.Primitives {
 	public class Rectangle : Primitive {
 
-
 		public Vector3 pos { get; set; }
 		public Vector3 size { get; set; }
 		
@@ -15,32 +14,27 @@ namespace OpenGLGraphing.Primitives {
 			
 			preDraw();
 
-			float left = pos.X - size.X / 2;
-			float right = pos.X + size.X / 2;
-			float top = pos.Y - size.Y / 2;
-			float bottom = pos.Y + size.Y / 2;
-
 			vertexList = new VertexList() {
 				vertices = new List<Vertex> {
 					new Vertex {
-						point = new Vector3(left, bottom, pos.Z),
-						color = color,
-						texCoord = new Vector2(0, 0)
-					},
-					new Vertex {
-						point = new Vector3(left, top, pos.Z),
+						point = new Vector3(-0.5f, -0.5f, pos.Z),
 						color = color,
 						texCoord = new Vector2(0, 1)
 					},
 					new Vertex {
-						point = new Vector3(right, bottom, pos.Z),
+						point = new Vector3(-0.5f, 0.5f, pos.Z),
 						color = color,
-						texCoord = new Vector2(1, 0)
+						texCoord = new Vector2(0, 0)
 					},
 					new Vertex {
-						point = new Vector3(right, top, pos.Z),
+						point = new Vector3(0.5f, -0.5f, pos.Z),
 						color = color,
 						texCoord = new Vector2(1, 1)
+					},
+					new Vertex {
+						point = new Vector3(0.5f, 0.5f, pos.Z),
+						color = color,
+						texCoord = new Vector2(1, 0)
 					}
 				},
 				indices = new List<uint> {
@@ -48,6 +42,12 @@ namespace OpenGLGraphing.Primitives {
 					2, 3, 1
 				}
 			};
+
+
+			transformationMatrix = Matrix4.Identity
+				* Matrix4.CreateScale(size.ToOpenTKVector3())
+				* Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotationDegrees))
+				* Matrix4.CreateTranslation(pos.ToOpenTKVector3());
 
 
 			draw(PrimitiveType.Triangles);

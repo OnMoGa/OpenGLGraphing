@@ -21,7 +21,15 @@ namespace OpenGLGraphing {
 		}
 
 
+		public static Vector3 ToSystemVector3(this OpenTK.Vector3 vec3) {
+			return new Vector3(vec3.X, vec3.Y, vec3.Z);
+		}
+
+		public static OpenTK.Vector3 ToOpenTKVector3(this Vector3 vec3) {
+			return new OpenTK.Vector3(vec3.X, vec3.Y, vec3.Z);
+		}
 
 
+		
 	}
 }

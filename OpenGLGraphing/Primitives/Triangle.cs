@@ -12,6 +12,7 @@ namespace OpenGLGraphing.Primitives {
 		public Vector3 p1 { get; set; }
 		public Vector3 p2 { get; set; }
 		public Vector3 p3 { get; set; }
+		public Vector3 scale { get; set; } = new Vector3(1, 1, 1);
 
 		public Triangle(Vector3 p1, Vector3 p2, Vector3 p3) {
 			this.p1=p1;
@@ -44,6 +45,10 @@ namespace OpenGLGraphing.Primitives {
 					1, 2, 3
 				}
 			};
+
+			transformationMatrix = Matrix4.Identity
+				* Matrix4.CreateScale(scale.ToOpenTKVector3())
+				* Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotationDegrees));
 
 			draw(PrimitiveType.Triangles);
 		}
