@@ -41,13 +41,16 @@ namespace OpenGLGraphing.Graphs {
 			List<Bar> bars = data.ToList();
 
 			List<Rectangle> rectangles = new List<Rectangle>();
+			List<OST> labels = new List<OST>();
 
 			float maxHeight = bars.Max(b => b.height);
 
-			float barSpacing = size.X/bars.Count();
+			axes.maxYValue = maxHeight;
+
+			float barSpacing = size.X/bars.Count;
 			float barWidth = barSpacing - 0.01f;
 			
-			for (var barIndex = 0; barIndex < bars.Count; barIndex++) {
+			for (int barIndex = 0; barIndex < bars.Count; barIndex++) {
 				Bar bar = bars[barIndex];
 				float barX = (-bars.Count/2.0f*barSpacing) + (barIndex*barSpacing) + (barSpacing*0.5f);
 				float scaledHeight = bar.height / maxHeight * size.Y;
@@ -57,12 +60,24 @@ namespace OpenGLGraphing.Graphs {
 					size = new Vector3(barWidth, scaledHeight, 0.1f)
 				};
 				rectangles.Add(rectangle);
+
+
+				OST label = new OST() {
+					text = bar.label,
+					rotationDegrees = -45,
+					anchor = OST.Anchor.Left,
+					pos = new Vector3(barX, -size.Y/2 - 0.02f, 0),
+					height = 0.05f
+				};
+
+				labels.Add(label);
+
 			}
 
 
 			drawables = new List<IDrawable> {
 				axes
-			}.Concat(rectangles);
+			}.Concat(rectangles).Concat(labels);
 		}
 
 
