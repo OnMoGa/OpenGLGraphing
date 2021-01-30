@@ -50,7 +50,11 @@ namespace OpenGLGraphing {
 			double bDelta = bDiff * ratio;
 			int newB = (int)(color1.B + bDelta);
 
-			return Color.FromArgb(newA, newR, newG, newB);
+			return Color.FromArgb(
+				Math.Min(Math.Min(newA, 255), 0),
+				Math.Min(Math.Min(newR, 255), 0),
+				Math.Min(Math.Min(newG, 255), 0),
+				Math.Min(Math.Min(newB, 255), 0));
 		}
 		
 	}

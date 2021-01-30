@@ -7,8 +7,7 @@ using System.Text;
 
 namespace OpenGLGraphing {
 	public class SmartCollection<T> : ObservableCollection<T> {
-		public SmartCollection()
-			: base() {
+		public SmartCollection() {
 		}
 
 		public SmartCollection(IEnumerable<T> collection)
